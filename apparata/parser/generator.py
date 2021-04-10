@@ -7,10 +7,22 @@ from .lexer import Lexer
 class Generator:
     """Transformation engine for Graph objects."""
 
-    def generate_from_file(self, file_name: str):
+    def generate_from_file(self, file_name: str, report: bool = False) -> Parser:
         grammar_file = open(file_name, 'r')
-        file = self.parse_grammar_file(grammar_file.read())
+        parser = self.parse_grammar_file(grammar_file.read())
         grammar_file.close()
+
+        if report:
+            self.generate_report(parser)
+
+        return parser
+
+    def parse_grammar_file(self, grammar_file) -> Parser:
+        parser = Parser(Lexer(grammar_file))
+        parser.parse()
+        return parser
+
+    def generate_report(self, file):
 
         print("======================================================")
         print("GRAPH DATA")
@@ -35,8 +47,3 @@ class Generator:
         print(f"Edges: {file.edge_count}")
         print("")
         print("======================================================")
-
-    def parse_grammar_file(self, grammar_file) -> Parser:
-        parser = Parser(Lexer(grammar_file))
-        parser.parse()
-        return parser
